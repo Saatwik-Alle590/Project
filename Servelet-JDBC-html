@@ -1,0 +1,124 @@
+servlet.java
+package sample;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+/**
+ * Servlet implementation class ServletP1
+ */
+public class ServletP1 extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public ServletP1() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+//		response.getWriter().append("Served at: ").append(request.getContextPath());
+		
+		{
+			response.setContentType("text/html");
+			PrintWriter pn=response.getWriter();
+			String name=request.getParameter("uname");
+			String pass=request.getParameter("pass");
+			int password=Integer.parseInt(pass); 
+			
+			try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			} 
+			
+			catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			}
+			
+			
+			Connection con=null;
+			
+			try {
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/db","root","root");
+			} 
+			
+			catch (SQLException e) {
+			e.printStackTrace();
+			}
+			
+			//INSERT 
+			
+			try {
+				
+			pn.println(name);
+			pn.println(password);
+			PreparedStatement st = con.prepareStatement("insert into student(id,name) values(?,?)");
+			st.setInt(1,password);
+			st.setString(2,name);
+			st.executeUpdate();
+//			
+			pn.println("<h1>Record Inserted into student table succesfully</h1>");
+			
+				
+			//update	
+//			st = con.prepareStatement("update student set name='ALLE' where id=61");
+//			st.executeUpdate();
+//			
+//			pn.println("<h1>Record updated into student table succesfully</h1>");
+			
+			//DELETE 
+//			st.executeUpdate("delete from student where id=45");
+			//
+			
+			} catch (SQLException e) {
+			e.printStackTrace();
+			}
+			}
+
+		
+	}
+
+}
+
+
+
+
+
+
+
+
+index.html
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<form action="Servlet_Crud" method="get">
+	<label>Enter name:</label>
+	<input type="text" name="uname"></input>
+	<label>Enter roll:</label>
+	<input type="text" name="pass"></input>
+	<button type="submit">Submit</button>
+	</form>
+
+
+</body>
+</html>
